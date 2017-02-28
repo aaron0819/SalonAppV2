@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	rel="stylesheet" />
+</head>
+<body>
+	<H1 style="text-align: center">Stylist Home</H1>
+	<br />
+	<H3 style="text-align: center">My Appointments</H3>
+	<table
+		class="table-bordered table-striped"
+		style="margin: 0 auto;">
+		<thead>
+			<tr>
+				<th>Service</th>
+				<th>Date</th>
+				<th>From</th>
+				<th>To</th>
+				<th>With</th>
+				<th>Customer Contact Number</th>
+			</tr>
+		</thead>
+		<tr th:each="appointment : ${appointments}">
+			<td th:text="${appointment.appointmentDesc}"></td>
+			<td th:text="${appointment.date}"></td>
+			<td th:text="${appointment.startTime}"></td>
+			<td th:text="${appointment.endTime}"></td>
+			<td
+				th:text="${appointment.customer.firstName} + ' ' + ${appointment.customer.lastName}"></td>
+			<td th:text="${appointment.customer.phoneNumber}"></td>
+		</tr>
+		<tr th:each="customer : ${customers}">
+			<td th:text="${customer}"></td>
+		</tr>
+	</table>
+</body>
+</html>
