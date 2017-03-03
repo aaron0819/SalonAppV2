@@ -26,7 +26,7 @@ public class AppointmentJDBCTemplate implements AppointmentDAO {
 
 	@Override
 	public void createAppointment(String service, String date, String startTime, String endTime, int stylistId,
-			int customerId) {
+			long customerId) {
 		String sql = "insert into Appointments (service, date, time_from, time_to, stylist_id, customer_id) values (?, ?, ?, ?, ?, ?)";
 
 		getJdbcTemplate().update(sql, service, date, startTime, endTime, stylistId, customerId);

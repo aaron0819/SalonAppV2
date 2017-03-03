@@ -1,0 +1,47 @@
+package com.hampson.salonapp.controller;
+
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.hampson.salonapp.model.Customer;
+import com.hampson.salonapp.service.AppointmentService;
+import com.hampson.salonapp.service.CustomerService;
+
+@Controller
+public class AddAppointmentController {
+
+	@RequestMapping("/stylistAddAppointment")
+	public ModelAndView addEvent(HttpServletRequest request, @RequestParam("appointmentType") String appointmentType,
+			@RequestParam("customerFirstName") String customerFirstName,
+			@RequestParam("customerLastName") String customerLastName,
+			@RequestParam("customerPhoneNumber") String customerPhoneNumber,
+			@RequestParam("appointmentDate") String appointmentDate,
+			@RequestParam("appointmentStartTime") String appointmentStartTime,
+			@RequestParam("appointmentEndTime") String appointmentEndTime) throws IOException {
+
+		CustomerService customerService = new CustomerService();
+		AppointmentService appointmentService = new AppointmentService();
+
+		Customer c = customerService.getCustomer(customerFirstName, customerLastName, customerPhoneNumber);
+
+		if (null != c) {
+			appointmentService.getAppointmentJDBCTemplate().createAppointment(appointmentType,
+					appointmentDate.toString(), appointmentStartTime.toString(), appointmentEndTime.toString(),
+					(int) request.getSession().getAttribute("stylistId"), c.getId());
+		} else {
+			long customerId = customerService.createCustomer(customerFirstName, customerLastName, customerPhoneNumber);
+
+			appointmentService.getAppointmentJDBCTemplate().createAppointment(appointmentType,
+					appointmentDate.toString(), appointmentStartTime.toString(), appointmentEndTime.toString(),
+					(int) request.getSession().getAttribute("stylistId"), customerId);
+		}
+
+		return new ModelAndView("redirect:/login");
+	}
+}

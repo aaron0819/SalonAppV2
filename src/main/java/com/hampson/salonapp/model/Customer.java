@@ -11,7 +11,7 @@ public class Customer implements Serializable {
 	private String lastName;
 	private String phoneNumber;
 
-	protected Customer() {
+	public Customer() {
 		super();
 	}
 

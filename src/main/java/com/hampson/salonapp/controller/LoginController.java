@@ -16,28 +16,36 @@ public class LoginController {
 
 	private AccountService accountService;
 	private AppointmentService appointmentService;
-	
+
 	@RequestMapping("/login")
-	public ModelAndView login(Model model, HttpServletRequest request, @RequestParam("emailAddress") String emailAddress, @RequestParam("password") String password) {
-		
-		accountService = new AccountService();
-		appointmentService = new AppointmentService();
-		
+	public ModelAndView login(Model model, HttpServletRequest request) {
+
 		String page = "index";
-		
-		int pageIndicator = accountService.login(emailAddress, password, request);
-		
-		System.out.println(pageIndicator);
-		
-		if(1 == pageIndicator) {
+		int pageIndicator = 0;
+
+		if (null == request.getSession().getAttribute("pageIndicator")) {
+			accountService = new AccountService();
+			appointmentService = new AppointmentService();
+
+			String emailAddress = request.getParameter("emailAddress");
+			String password = request.getParameter("password");
+
+			pageIndicator = accountService.login(emailAddress, password, request);
+		} else {
+			pageIndicator = (int) request.getSession().getAttribute("pageIndicator");
+		}
+		if (1 == pageIndicator) {
 			page = "customerHome";
-		} else if(2 == pageIndicator){
-			model.addAttribute("appointments", appointmentService.getAppointmentsByStylist((Integer) request.getSession().getAttribute("stylistId")));
+		} else if (2 == pageIndicator) {
+			model.addAttribute("appointments", appointmentService
+					.getAppointmentsByStylist((Integer) request.getSession().getAttribute("stylistId")));
 			page = "stylistHome";
 		} else {
 			model.addAttribute("error", "Invalid Email Address and / or Password Entered");
 			page = "index";
 		}
+
+		request.getSession().setAttribute("pageIndicator", pageIndicator);
 
 		return new ModelAndView(page);
 	}

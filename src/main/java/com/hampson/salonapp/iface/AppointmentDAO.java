@@ -10,7 +10,7 @@ public interface AppointmentDAO {
 
 	public void setDataSource(DataSource ds);
 
-	public void createAppointment(String service, String date, String startTime, String endTime, int stylistId, int customerId);
+	public void createAppointment(String service, String date, String startTime, String endTime, int stylistId, long customerId);
 
 	public Appointment getAppointment(int id);
 

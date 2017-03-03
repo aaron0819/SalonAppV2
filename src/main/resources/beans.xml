@@ -21,8 +21,11 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<bean id="accountJDBCTemplate"
-		class="com.hampson.salonapp.jdbctemplate.AccountJDBCTemplate">
+	<bean id="accountJDBCTemplate" class="com.hampson.salonapp.jdbctemplate.AccountJDBCTemplate">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="customerJDBCTemplate" class="com.hampson.salonapp.jdbctemplate.CustomerJDBCTemplate">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 </beans>
