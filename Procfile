@@ -1,1 +1,1 @@
-web: sh src/main/webapp
+web java -Dserver.port=$PORT $JAVA_OPTS -jar target/SalonAppBootPostgres-0.0.1-SNAPSHOT.war
