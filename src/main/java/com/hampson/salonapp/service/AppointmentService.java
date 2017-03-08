@@ -1,7 +1,5 @@
 package com.hampson.salonapp.service;
 
-import static java.lang.Integer.parseInt;
-
 import java.util.List;
 
 import org.springframework.context.ApplicationContext;
@@ -26,6 +24,10 @@ public class AppointmentService {
 		return appointmentJDBCTemplate.getAppointmentsByStylistId(stylistId);
 	}
 
+	public List<Appointment> getAppointmentsByCustomerId(int customerId) {
+		return appointmentJDBCTemplate.getAppointmentsByCustomerId(customerId);
+	}
+	
 	public AppointmentDAO getAppointmentJDBCTemplate() {
 		return appointmentJDBCTemplate;
 	}

@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.hampson.salonapp.service.AccountService;
@@ -35,6 +34,8 @@ public class LoginController {
 			pageIndicator = (int) request.getSession().getAttribute("pageIndicator");
 		}
 		if (1 == pageIndicator) {
+			model.addAttribute("appointments", appointmentService
+					.getAppointmentsByCustomerId((Integer) request.getSession().getAttribute("customerId")));
 			page = "customerHome";
 		} else if (2 == pageIndicator) {
 			model.addAttribute("appointments", appointmentService

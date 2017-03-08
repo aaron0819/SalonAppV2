@@ -88,6 +88,7 @@ public class AccountJDBCTemplate implements AccountDAO {
 
 				if (0 != rs.getInt("customer_id")) {
 					accountType = 1;
+					request.getSession().setAttribute("customerId", rs.getInt("customer_id"));
 				} else if (0 != rs.getInt("stylist_id")) {
 					accountType = 2;
 					request.getSession().setAttribute("stylistId", rs.getInt("stylist_id"));

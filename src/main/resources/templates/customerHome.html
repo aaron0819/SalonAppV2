@@ -9,6 +9,26 @@
 	rel="stylesheet" />
 </head>
 <body>
-	<H1>Customer Home</H1>
+	<H3>My Upcoming Appointments</H3>
+	<table
+		class="table-bordered table-striped"
+		style="margin: 0 auto;">
+		<thead>
+			<tr>
+				<th>Service</th>
+				<th>Date</th>
+				<th>From</th>
+				<th>To</th>
+				<th>With</th>
+			</tr>
+		</thead>
+		<tr th:each="appointment : ${appointments}">
+			<td th:text="${appointment.appointmentDesc}"></td>
+			<td th:text="${appointment.date}"></td>
+			<td th:text="${appointment.startTime}"></td>
+			<td th:text="${appointment.endTime}"></td>
+			<td th:text="${appointment.stylist}"></td>
+		</tr>
+	</table>
 </body>
 </html>

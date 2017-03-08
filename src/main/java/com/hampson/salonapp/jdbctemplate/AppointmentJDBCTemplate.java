@@ -70,7 +70,7 @@ public class AppointmentJDBCTemplate implements AppointmentDAO {
 
 	@Override
 	public List<Appointment> getAppointmentsByCustomerId(int customerId) {
-		String sql = "SELECT Appointments.service, Appointments.date, Appointments.time_from, Appointments.time_to, Appointments.stylist_id, Appointments.customer_id, Customers.customer_first_name, Customers.customer_last_name, Customers.customer_phone_number, Stylists.stylist_first_name, Stylists.stylist_last_name FROM Appointments INNER JOIN Customers ON Appointments.customer_id = Customers.id INNER JOIN Stylists on Appointments.stylist_id = Stylists.id WHERE Customers.id = ?";
+		String sql = "SELECT Appointments.service, Appointments.date, Appointments.time_from, Appointments.time_to, Appointments.stylist_id, Appointments.customer_id, Stylists.stylist_first_name, Stylists.stylist_last_name FROM Appointments INNER JOIN Customers ON Appointments.customer_id = Customers.id INNER JOIN Stylists on Appointments.stylist_id = Stylists.id WHERE Customers.id = ?";
 
 		List<Appointment> appointments = new ArrayList<Appointment>();
 
@@ -85,9 +85,7 @@ public class AppointmentJDBCTemplate implements AppointmentDAO {
 			appointment.setEndTime((String) row.get("time_to"));
 			appointment.setStylist(
 					new Stylist((String) row.get("stylist_first_name"), (String) row.get("stylist_last_name")));
-			appointment.setCustomer(new Customer((String) row.get("customer_first_name"),
-					(String) row.get("customer_last_name"), (String) row.get("customer_phone_number")));
-
+			
 			appointments.add(appointment);
 		}
 
