@@ -17,7 +17,7 @@ public class IndexController {
 		
 		//Bypass login / registration page if active account already logged in 
 		if(null != request.getSession().getAttribute("pageIndicator")) {
-			page = "/login";
+			page = "redirect:/login";
 		}
 		
 		return new ModelAndView(page);
