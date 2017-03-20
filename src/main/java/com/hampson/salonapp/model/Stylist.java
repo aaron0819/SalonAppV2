@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class Stylist implements Serializable {
 	private static final long serialVersionUID = 2411137916291785766L;
 
+	private int id;
 	private String firstName;
 	private String lastName;
 
@@ -34,6 +35,14 @@ public class Stylist implements Serializable {
 		this.lastName = lastName;
 	}
 
+	public int getId() {
+		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	@Override
 	public String toString() {
 		return firstName + " " + lastName;

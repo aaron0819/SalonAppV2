@@ -28,4 +28,8 @@
 	<bean id="customerJDBCTemplate" class="com.hampson.salonapp.jdbctemplate.CustomerJDBCTemplate">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
+
+	<bean id="stylistJDBCTemplate" class="com.hampson.salonapp.jdbctemplate.StylistJDBCTemplate">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
 </beans>

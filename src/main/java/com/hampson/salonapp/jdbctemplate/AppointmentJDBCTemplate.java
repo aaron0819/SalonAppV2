@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import com.hampson.salonapp.iface.AppointmentDAO;
 import com.hampson.salonapp.model.Appointment;
 import com.hampson.salonapp.model.Customer;
+import com.hampson.salonapp.model.PendingAppointment;
 import com.hampson.salonapp.model.Stylist;
 import com.hampson.salonapp.resultmapper.AppointmentMapper;
 
@@ -27,7 +28,7 @@ public class AppointmentJDBCTemplate implements AppointmentDAO {
 	@Override
 	public void createAppointment(String service, String date, String startTime, String endTime, int stylistId,
 			long customerId) {
-		String sql = "insert into Appointments (service, date, time_from, time_to, stylist_id, customer_id) values (?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT into Appointments (service, date, time_from, time_to, stylist_id, customer_id) values (?, ?, ?, ?, ?, ?)";
 
 		getJdbcTemplate().update(sql, service, date, startTime, endTime, stylistId, customerId);
 	}
@@ -85,7 +86,7 @@ public class AppointmentJDBCTemplate implements AppointmentDAO {
 			appointment.setEndTime((String) row.get("time_to"));
 			appointment.setStylist(
 					new Stylist((String) row.get("stylist_first_name"), (String) row.get("stylist_last_name")));
-			
+
 			appointments.add(appointment);
 		}
 
@@ -112,6 +113,71 @@ public class AppointmentJDBCTemplate implements AppointmentDAO {
 
 	public JdbcTemplate getJdbcTemplate() {
 		return jdbcTemplate;
+	}
+
+	@Override
+	public void requestAppointment(String appointmentType, int customerId, String appointmentDate,
+			String alternateAppointmentDate, String appointmentStartTime, String alternateAppointmentTime,
+			String preferredStylist) {
+
+		String sql = "INSERT into pendingappointments (service, requested_date, alternate_date, requested_time, alternate_time, stylist_id, customer_id) values (?, ?, ?, ?, ?, ?, ?)";
+
+		getJdbcTemplate().update(sql, appointmentType, appointmentDate, alternateAppointmentDate, appointmentStartTime,
+				alternateAppointmentTime, Integer.parseInt(preferredStylist), customerId);
+	}
+
+	@Override
+	public List<PendingAppointment> getPendingAppointmentsByStylistId(int stylistId) {
+		String sql = "SELECT PendingAppointments.id, PendingAppointments.service, PendingAppointments.requested_date, PendingAppointments.alternate_date, PendingAppointments.requested_time, PendingAppointments.alternate_time, PendingAppointments.stylist_id, PendingAppointments.customer_id, Customers.customer_first_name, Customers.customer_last_name, Customers.customer_phone_number, Stylists.stylist_first_name, Stylist_last_name FROM pendingappointments INNER JOIN Customers ON Pendingappointments.customer_id = Customers.id INNER JOIN Stylists ON Pendingappointments.stylist_id = Stylists.id WHERE Pendingappointments.stylist_id = ?";
+
+		List<PendingAppointment> appointments = new ArrayList<PendingAppointment>();
+
+		List<Map<String, Object>> rows = getJdbcTemplate().queryForList(sql, new Object[] { stylistId });
+
+		for (Map<String, Object> row : rows) {
+			PendingAppointment pending = new PendingAppointment();
+
+			pending.setId((int) row.get("id"));
+			pending.setService((String) row.get("service"));
+			pending.setRequestedDate((String) row.get("requested_date"));
+			pending.setRequestedTime((String) row.get("requested_time"));
+			pending.setAlternateDate((String) row.get("alternate_date"));
+			pending.setAlternateTime((String) row.get("alternate_time"));
+			pending.setCustomer(new Customer((String) row.get("customer_first_name"),
+					(String) row.get("customer_last_name"), (String) row.get("customer_phone_number")));
+			pending.setStylist(row.get("stylist_first_name") + " " + row.get("stylist_last_name"));
+
+			appointments.add(pending);
+		}
+
+		return appointments;
+	}
+
+	@Override
+	public List<PendingAppointment> getPendingAppointmentsWithNoStylistPreference() {
+		String sql = "SELECT PendingAppointments.id, PendingAppointments.service, PendingAppointments.requested_date, PendingAppointments.alternate_date, PendingAppointments.requested_time, PendingAppointments.alternate_time, PendingAppointments.stylist_id, PendingAppointments.customer_id, Customers.customer_first_name, Customers.customer_last_name, Customers.customer_phone_number FROM pendingappointments INNER JOIN Customers ON Pendingappointments.customer_id = Customers.id WHERE Pendingappointments.stylist_id = 0";
+
+		List<PendingAppointment> appointments = new ArrayList<PendingAppointment>();
+
+		List<Map<String, Object>> rows = getJdbcTemplate().queryForList(sql);
+
+		for (Map<String, Object> row : rows) {
+			PendingAppointment pending = new PendingAppointment();
+
+			pending.setId((int) row.get("id"));
+			pending.setService((String) row.get("service"));
+			pending.setRequestedDate((String) row.get("requested_date"));
+			pending.setRequestedTime((String) row.get("requested_time"));
+			pending.setAlternateDate((String) row.get("alternate_date"));
+			pending.setAlternateTime((String) row.get("alternate_time"));
+			pending.setCustomer(new Customer((String) row.get("customer_first_name"),
+					(String) row.get("customer_last_name"), (String) row.get("customer_phone_number")));
+			pending.setStylist("No Preference");
+
+			appointments.add(pending);
+		}
+
+		return appointments;
 	}
 
 }

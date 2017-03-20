@@ -40,6 +40,8 @@ public class LoginController {
 		} else if (2 == pageIndicator) {
 			model.addAttribute("appointments", appointmentService
 					.getAppointmentsByStylist((Integer) request.getSession().getAttribute("stylistId")));
+			model.addAttribute("myPendingAppointments", appointmentService.getPendingAppointmentsByStylistId((Integer) request.getSession().getAttribute("stylistId")));
+			model.addAttribute("noPreferencePendingAppointments", appointmentService.getPendingAppointmentsWithNoStylistPreference());
 			page = "stylistHome";
 		} else {
 			model.addAttribute("error", "Invalid Email Address and / or Password Entered");

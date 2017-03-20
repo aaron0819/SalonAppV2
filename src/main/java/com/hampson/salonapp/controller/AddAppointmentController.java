@@ -31,8 +31,8 @@ public class AddAppointmentController {
 		Customer c = customerService.getCustomer(customerFirstName, customerLastName, customerPhoneNumber);
 
 		if (null != c) {
-			appointmentService.getAppointmentJDBCTemplate().createAppointment(appointmentType,
-					appointmentDate.toString(), appointmentStartTime.toString(), appointmentEndTime.toString(),
+			appointmentService.createAppointment(appointmentType, appointmentDate.toString(),
+					appointmentStartTime.toString(), appointmentEndTime.toString(),
 					(int) request.getSession().getAttribute("stylistId"), c.getId());
 		} else {
 			long customerId = customerService.createCustomer(customerFirstName, customerLastName, customerPhoneNumber);
@@ -41,6 +41,23 @@ public class AddAppointmentController {
 					appointmentDate.toString(), appointmentStartTime.toString(), appointmentEndTime.toString(),
 					(int) request.getSession().getAttribute("stylistId"), customerId);
 		}
+
+		return new ModelAndView("redirect:/login");
+	}
+
+	@RequestMapping("/customerRequestAppointment")
+	public ModelAndView submitAppointmentRequest(HttpServletRequest request,
+			@RequestParam("appointmentType") String appointmentType,
+			@RequestParam("appointmentDate") String appointmentDate,
+			@RequestParam("alternateAppointmentDate") String alternateAppointmentDate,
+			@RequestParam("appointmentStartTime") String appointmentStartTime,
+			@RequestParam("alternateAppointmentTime") String alternateAppointmentTime,
+			@RequestParam("preferredStylist") String preferredStylist) {
+
+		AppointmentService appointmentService = new AppointmentService();
+
+		appointmentService.requestAppointment(appointmentType, (int) request.getSession().getAttribute("customerId"),
+				appointmentDate, alternateAppointmentDate, appointmentStartTime, alternateAppointmentTime, preferredStylist);
 
 		return new ModelAndView("redirect:/login");
 	}
