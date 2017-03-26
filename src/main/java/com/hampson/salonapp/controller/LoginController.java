@@ -48,6 +48,10 @@ public class LoginController {
 			page = "index";
 		}
 
+		model.addAttribute("returnMessage", request.getSession().getAttribute("returnMessage"));
+		
+		request.getSession().setAttribute("returnMessage", "");
+		
 		request.getSession().setAttribute("pageIndicator", pageIndicator);
 
 		return new ModelAndView(page);

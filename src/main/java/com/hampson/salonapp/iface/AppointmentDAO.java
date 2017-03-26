@@ -29,4 +29,6 @@ public interface AppointmentDAO {
 	public List<PendingAppointment> getPendingAppointmentsByStylistId(int stylistId);
 	
 	public List<PendingAppointment> getPendingAppointmentsWithNoStylistPreference();
+
+	public String confirmAppointment(int pendingAppointmentId);
 }

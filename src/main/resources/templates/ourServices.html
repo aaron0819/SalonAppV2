@@ -28,10 +28,10 @@
 				class="collapse navbar-collapse"
 				id="myNavbar">
 				<ul class="nav navbar-nav">
-					<li class="active"><a>My Appointments</a></li>
+					<li><a href="/login">My Appointments</a></li>
 					<li><a href="/requestNewAppointment">Request New
 							Appointment</a></li>
-					<li><a href="/ourServices">Our Services</a></li>
+					<li class="active"><a href="/ourServices">Our Services</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="/logout">Logout</a></li>
@@ -39,26 +39,24 @@
 			</div>
 		</div>
 	</nav>
-	<H3>My Upcoming Appointments</H3>
-	<table
-		class="table-bordered table-striped"
-		style="margin: 0 auto;">
-		<thead>
-			<tr>
+	<div
+		class="col-md-12"
+		style="text-align: center;">
+		<H3>The Services We Offer:</H3>
+		<table
+			class="table-bordered table-striped"
+			style="margin: 0 auto;">
+			<thead>
 				<th>Service</th>
-				<th>Date</th>
-				<th>From</th>
-				<th>To</th>
-				<th>With</th>
+				<th>Expected Duration</th>
+				<th>Price</th>
+			</thead>
+			<tr th:each="service : ${services}">
+				<td th:text="${service.description}"></td>
+				<td th:text="${service.duration}"></td>
+				<td th:text="'$' + ${service.price} + '0'"></td>
 			</tr>
-		</thead>
-		<tr th:each="appointment : ${appointments}">
-			<td th:text="${appointment.appointmentDesc}"></td>
-			<td th:text="${appointment.date}"></td>
-			<td th:text="${appointment.startTime}"></td>
-			<td th:text="${appointment.endTime}"></td>
-			<td th:text="${appointment.stylist}"></td>
-		</tr>
-	</table>
+		</table>
+	</div>
 </body>
 </html>

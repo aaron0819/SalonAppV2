@@ -49,6 +49,10 @@ public class AppointmentService {
 		return getAppointmentJDBCTemplate().getPendingAppointmentsWithNoStylistPreference();
 	}
 	
+	public String confirmAppointment(int pendingAppointmentId) {
+		return getAppointmentJDBCTemplate().confirmAppointment(pendingAppointmentId);
+	}
+	
 	public AppointmentDAO getAppointmentJDBCTemplate() {
 		return appointmentJDBCTemplate;
 	}
@@ -56,6 +60,4 @@ public class AppointmentService {
 	public void setAppointmentJDBCTemplate(AppointmentDAO appointmentJDBCTemplate) {
 		this.appointmentJDBCTemplate = appointmentJDBCTemplate;
 	}
-
-
 }

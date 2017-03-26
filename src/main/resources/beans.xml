@@ -32,4 +32,8 @@
 	<bean id="stylistJDBCTemplate" class="com.hampson.salonapp.jdbctemplate.StylistJDBCTemplate">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
+
+	<bean id="serviceJDBCTemplate" class="com.hampson.salonapp.jdbctemplate.ServiceJDBCTemplate">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
 </beans>

@@ -41,6 +41,7 @@ th, td {
 					<li><a href="/login">My Appointments</a></li>
 					<li class="active"><a href="/requestNewAppointment">Request
 							New Appointment</a></li>
+					<li><a href="/ourServices">Our Services</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="/logout">Logout</a></li>
@@ -65,8 +66,10 @@ th, td {
 						class="form-control"
 						required="required">
 						<option></option>
-						<option>Haircut</option>
-						<option>Nails</option>
+						<option
+							th:each="service : ${services}"
+							th:value="${service.description}"
+							th:text="${service.description} + ' ($' + ${service.price} + '0)'"></option>
 					</select>
 				</div>
 				<div class="form-group">
@@ -115,8 +118,7 @@ th, td {
 				<div class="form-group">
 					<label
 						for="preferredStylist"
-						id="preferredStylistLabel">Preferred Stylist (Optional):</label> 
-						<select
+						id="preferredStylistLabel">Preferred Stylist (Optional):</label> <select
 						id="preferredStylist"
 						name="preferredStylist">
 						<option value="0">No Preference</option>

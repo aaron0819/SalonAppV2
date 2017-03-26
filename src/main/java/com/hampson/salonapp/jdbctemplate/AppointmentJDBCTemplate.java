@@ -1,12 +1,16 @@
 package com.hampson.salonapp.jdbctemplate;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.hampson.salonapp.iface.AppointmentDAO;
 import com.hampson.salonapp.model.Appointment;
@@ -145,7 +149,8 @@ public class AppointmentJDBCTemplate implements AppointmentDAO {
 			pending.setAlternateTime((String) row.get("alternate_time"));
 			pending.setCustomer(new Customer((String) row.get("customer_first_name"),
 					(String) row.get("customer_last_name"), (String) row.get("customer_phone_number")));
-			pending.setStylist(row.get("stylist_first_name") + " " + row.get("stylist_last_name"));
+			pending.setStylist(
+					new Stylist((String) row.get("stylist_first_name"), (String) row.get("stylist_last_name")));
 
 			appointments.add(pending);
 		}
@@ -172,12 +177,70 @@ public class AppointmentJDBCTemplate implements AppointmentDAO {
 			pending.setAlternateTime((String) row.get("alternate_time"));
 			pending.setCustomer(new Customer((String) row.get("customer_first_name"),
 					(String) row.get("customer_last_name"), (String) row.get("customer_phone_number")));
-			pending.setStylist("No Preference");
+			pending.setStylist(new Stylist("No", "Preference"));
 
 			appointments.add(pending);
 		}
 
 		return appointments;
+	}
+
+	/**
+	 * This method will first retrieve the pending appointment that a stylist
+	 * now confirmed from the pending appointments table, then it will move it
+	 * to the confirmed appointments table and remove it from the pending
+	 * appointments table
+	 * 
+	 * @param pendingAppointmentId
+	 */
+	@Override
+	public String confirmAppointment(int pendingAppointmentId) {
+		String response = "";
+
+		String sql = "SELECT id, service, requested_date, alternate_date, requested_time, alternate_time, stylist_id, customer_id FROM pendingappointments WHERE id = ? LIMIT 1";
+
+		PendingAppointment pending = getJdbcTemplate().query(sql, new Object[] { pendingAppointmentId },
+				new ResultSetExtractor<PendingAppointment>() {
+
+					@Override
+					public PendingAppointment extractData(ResultSet rs) throws SQLException, DataAccessException {
+
+						PendingAppointment appt = new PendingAppointment();
+						Customer c = new Customer();
+						Stylist s = new Stylist();
+
+						if (rs.next()) {
+
+							c.setId(rs.getLong("customer_id"));
+							s.setId(rs.getInt("stylist_id"));
+
+							appt.setId(rs.getInt("id"));
+							appt.setService(rs.getString("service"));
+							appt.setRequestedDate(rs.getString("requested_date"));
+							appt.setRequestedTime(rs.getString("requested_time"));
+							appt.setCustomer(c);
+							appt.setStylist(s);
+						}
+						return appt;
+					}
+				});
+
+		createAppointment(pending.getService(), pending.getRequestedDate(), pending.getRequestedTime(), "",
+				pending.getStylist().getId(), pending.getCustomer().getId());
+
+		sql = "DELETE FROM pendingappointments WHERE id = ?";
+
+		int rows = getJdbcTemplate().update(sql, new Object[] { pending.getId() });
+
+		if (rows == 1) {
+			response = "Appointment Confirmed Successfully";
+		} else {
+			response = "There was an error confirming the appointment. Please try again.";
+		}
+		
+		System.out.println(response);
+
+		return response;
 	}
 
 }

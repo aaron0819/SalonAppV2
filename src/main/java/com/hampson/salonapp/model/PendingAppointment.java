@@ -8,14 +8,14 @@ public class PendingAppointment {
 	private String requestedTime;
 	private String alternateTime;
 	private Customer customer;
-	private String stylist;
+	private Stylist stylist;
 
 	public PendingAppointment() {
 		super();
 	}
 	
 	public PendingAppointment(int id, String service, String requestedDate, String alternateDate, String requestedTime,
-			String alternateTime, Customer customer, String stylist) {
+			String alternateTime, Customer customer, Stylist stylist) {
 		super();
 		this.id = id;
 		this.service = service;
@@ -83,12 +83,12 @@ public class PendingAppointment {
 		this.customer = customer;
 	}
 
-	public String getStylist() {
+	public Stylist getStylist() {
 		return stylist;
 	}
 
-	public void setStylist(String stylist) {
-		this.stylist = stylist;
+	public void setStylist(Stylist s) {
+		this.stylist = s;
 	}
 
 }

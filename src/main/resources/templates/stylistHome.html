@@ -8,6 +8,12 @@
 <link
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
 	rel="stylesheet" />
+<script>
+	function handleClick(val) {
+		document.getElementById('confirmedAppointmentId').value = val;
+		return true;
+	}
+</script>
 </head>
 <body>
 	<nav class="navbar navbar-default">
@@ -40,6 +46,9 @@
 	</nav>
 	<H1 style="text-align: center">Stylist Home</H1>
 	<br />
+	<h4
+		style="text-align: center;"
+		th:text="${returnMessage}"></h4>
 	<H3 style="text-align: center">My Confirmed Appointments</H3>
 	<table
 		class="table-bordered table-striped"
@@ -68,30 +77,48 @@
 		</tr>
 	</table>
 	<br />
-	<H3 style="text-align: center">My Appointment Requests</H3>
-	<table
-		class="table-bordered table-striped"
-		style="margin: 0 auto;">
-		<thead>
-			<tr>
-				<th>Service</th>
-				<th>Requested Date</th>
-				<th>Requested Time</th>
-				<th>Customer</th>
-				<th>Customer Contact Number</th>
-				<th>Preferred Stylist</th>
-			</tr>
-		</thead>
-		<tr th:each="appointment : ${myPendingAppointments}">
-			<td th:text="${appointment.service}"></td>
-			<td th:text="${appointment.requestedDate}"></td>
-			<td th:text="${appointment.requestedTime}"></td>
-			<td th:text="${appointment.customer.firstName} + ' ' + ${appointment.customer.lastName}"></td>
-			<td th:text="${appointment.customer.phoneNumber}"></td>
-			<td th:text="${appointment.stylist}"></td>
-		</tr>
-	</table>
-		<br />
+	<form
+		action="/confirmAppointment"
+		method="GET">
+		<input
+			type="hidden"
+			id="confirmedAppointmentId"
+			name="confirmedAppointmentId"
+			value="0" />
+		<H3 style="text-align: center">My Appointment Requests</H3>
+		<div th:if="${not #lists.isEmpty(myPendingAppointments)}">
+			<table
+				class="table-bordered table-striped"
+				style="margin: 0 auto;">
+				<thead>
+					<tr>
+						<th>Service</th>
+						<th>Requested Date</th>
+						<th>Requested Time</th>
+						<th>Customer</th>
+						<th>Customer Contact Number</th>
+						<th>Preferred Stylist</th>
+						<th>Confirm Appointment?</th>
+					</tr>
+				</thead>
+				<tr th:each="appointment : ${myPendingAppointments}">
+					<td th:text="${appointment.service}"></td>
+					<td th:text="${appointment.requestedDate}"></td>
+					<td th:text="${appointment.requestedTime}"></td>
+					<td
+						th:text="${appointment.customer.firstName} + ' ' + ${appointment.customer.lastName}"></td>
+					<td th:text="${appointment.customer.phoneNumber}"></td>
+					<td th:text="${appointment.stylist}"></td>
+					<td><input
+						class="btn btn-success"
+						type="submit"
+						th:onclick="'handleClick(\'' + ${appointment.id} + '\');'"
+						value="Confirm Appointment" /></td>
+				</tr>
+			</table>
+		</div>
+	</form>
+	<br />
 	<H3 style="text-align: center">Other Appointment Requests</H3>
 	<table
 		class="table-bordered table-striped"
@@ -110,7 +137,8 @@
 			<td th:text="${appointment.service}"></td>
 			<td th:text="${appointment.requestedDate}"></td>
 			<td th:text="${appointment.requestedTime}"></td>
-			<td th:text="${appointment.customer.firstName} + ' ' + ${appointment.customer.lastName}"></td>
+			<td
+				th:text="${appointment.customer.firstName} + ' ' + ${appointment.customer.lastName}"></td>
 			<td th:text="${appointment.customer.phoneNumber}"></td>
 			<td th:text="${appointment.stylist}"></td>
 		</tr>
