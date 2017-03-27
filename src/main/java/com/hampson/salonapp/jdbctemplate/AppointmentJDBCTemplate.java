@@ -237,10 +237,37 @@ public class AppointmentJDBCTemplate implements AppointmentDAO {
 		} else {
 			response = "There was an error confirming the appointment. Please try again.";
 		}
-		
+
 		System.out.println(response);
 
 		return response;
+	}
+
+	@Override
+	public List<PendingAppointment> getPendingAppointmentsByCustomerId(int customerId) {
+		String sql = "SELECT id, service, requested_date, alternate_date, requested_time, alternate_time, stylist_id, customer_id FROM pendingappointments WHERE customer_id = ?";
+
+		List<PendingAppointment> appointments = new ArrayList<PendingAppointment>();
+
+		List<Map<String, Object>> rows = getJdbcTemplate().queryForList(sql, new Object[] { customerId });
+
+		for (Map<String, Object> row : rows) {
+			PendingAppointment pending = new PendingAppointment();
+
+			pending.setId((int) row.get("id"));
+			pending.setService((String) row.get("service"));
+			pending.setRequestedDate((String) row.get("requested_date"));
+			pending.setRequestedTime((String) row.get("requested_time"));
+			pending.setAlternateDate((String) row.get("alternate_date"));
+			pending.setAlternateTime((String) row.get("alternate_time"));
+			pending.setCustomer(new Customer((String) row.get("customer_first_name"),
+					(String) row.get("customer_last_name"), (String) row.get("customer_phone_number")));
+			pending.setStylist(new Stylist("No", "Preferred Stylist Indicated"));
+
+			appointments.add(pending);
+		}
+
+		return appointments;
 	}
 
 }

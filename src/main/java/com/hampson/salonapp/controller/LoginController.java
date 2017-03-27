@@ -36,6 +36,7 @@ public class LoginController {
 		if (1 == pageIndicator) {
 			model.addAttribute("appointments", appointmentService
 					.getAppointmentsByCustomerId((Integer) request.getSession().getAttribute("customerId")));
+			model.addAttribute("pendingAppointments", appointmentService.getPendingAppointmentsByCustomerId((Integer) request.getSession().getAttribute("customerId")));
 			page = "customerHome";
 		} else if (2 == pageIndicator) {
 			model.addAttribute("appointments", appointmentService

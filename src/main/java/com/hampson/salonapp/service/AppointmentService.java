@@ -49,6 +49,10 @@ public class AppointmentService {
 		return getAppointmentJDBCTemplate().getPendingAppointmentsWithNoStylistPreference();
 	}
 	
+	public Object getPendingAppointmentsByCustomerId(int customerId) {
+		return getAppointmentJDBCTemplate().getPendingAppointmentsByCustomerId(customerId);
+	}
+	
 	public String confirmAppointment(int pendingAppointmentId) {
 		return getAppointmentJDBCTemplate().confirmAppointment(pendingAppointmentId);
 	}

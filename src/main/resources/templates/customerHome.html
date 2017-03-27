@@ -39,26 +39,52 @@
 			</div>
 		</div>
 	</nav>
-	<H3>My Upcoming Appointments</H3>
-	<table
-		class="table-bordered table-striped"
-		style="margin: 0 auto;">
-		<thead>
-			<tr>
-				<th>Service</th>
-				<th>Date</th>
-				<th>From</th>
-				<th>To</th>
-				<th>With</th>
+	<div class="col-xs-12" style="text-align: center;">
+		<H3>My Upcoming Appointments</H3>
+		<table
+			class="table-bordered table-striped"
+			style="margin: 0 auto;">
+			<thead>
+				<tr>
+					<th>Service</th>
+					<th>Date</th>
+					<th>From</th>
+					<th>To</th>
+					<th>With</th>
+				</tr>
+			</thead>
+			<tr th:each="appointment : ${appointments}">
+				<td th:text="${appointment.appointmentDesc}"></td>
+				<td th:text="${appointment.date}"></td>
+				<td th:text="${appointment.startTime}"></td>
+				<td th:text="${appointment.endTime}"></td>
+				<td th:text="${appointment.stylist}"></td>
 			</tr>
-		</thead>
-		<tr th:each="appointment : ${appointments}">
-			<td th:text="${appointment.appointmentDesc}"></td>
-			<td th:text="${appointment.date}"></td>
-			<td th:text="${appointment.startTime}"></td>
-			<td th:text="${appointment.endTime}"></td>
-			<td th:text="${appointment.stylist}"></td>
-		</tr>
-	</table>
+		</table>
+	</div>
+	<br />
+	<div
+		th:if="${not #lists.isEmpty(pendingAppointments)}"
+		style="text-align: center;">
+		<H3>My Appointment Requests Pending Confirmation</H3>
+		<table
+			class="table-bordered table-striped"
+			style="margin: 0 auto;">
+			<thead>
+				<tr>
+					<th>Service</th>
+					<th>Date</th>
+					<th>Time</th>
+					<th>With</th>
+				</tr>
+			</thead>
+			<tr th:each="pending : ${pendingAppointments}">
+				<td th:text="${pending.service}"></td>
+				<td th:text="${pending.requestedDate}"></td>
+				<td th:text="${pending.requestedTime}"></td>
+				<td th:text="${pending.stylist}"></td>
+			</tr>
+		</table>
+	</div>
 </body>
 </html>
