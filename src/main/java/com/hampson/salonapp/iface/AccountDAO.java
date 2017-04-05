@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface AccountDAO {
 	
-	public void createAccount(String emailAddress, String password, String firstName, String lastName, String phoneNumber, String stylistCode);
+	public String createAccount(String emailAddress, String password, String firstName, String lastName, String phoneNumber, String stylistCode);
 	
 	public String getPasswordHash(String username);
 	

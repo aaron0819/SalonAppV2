@@ -1,5 +1,8 @@
 package com.hampson.salonapp.jdbctemplate;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -11,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import com.hampson.salonapp.email.EmailSender;
 import com.hampson.salonapp.iface.AccountDAO;
 
 public class AccountJDBCTemplate implements AccountDAO {
@@ -25,22 +29,26 @@ public class AccountJDBCTemplate implements AccountDAO {
 	}
 
 	@Override
-	public void createAccount(String emailAddress, String password, String firstName, String lastName,
+	public String createAccount(String emailAddress, String password, String firstName, String lastName,
 			String phoneNumber, String salonCode) {
-
+		String verificationCode = "";
+		String returnMessage = "There was an error creating your account. Please try again.";
 		String sql = "";
 		int customerCode = 0;
 		int stylistId = 0;
 		int numericSalonCode = 0;
-
+		SecureRandom random = null;
+		
 		try {
 			numericSalonCode = Integer.parseInt(salonCode);
-		} catch(NumberFormatException nfe) {
+		} catch (NumberFormatException nfe) {
 			numericSalonCode = 0;
 		}
-		
+
 		password = BCrypt.hashpw(password, BCrypt.gensalt());
-		
+		random = new SecureRandom();
+		verificationCode = new BigInteger(130, random).toString(32);
+
 		if (0 == numericSalonCode) {
 			sql = "INSERT INTO Customers(customer_first_name, customer_last_name, customer_phone_number) VALUES(?, ?, ?) ";
 			getAccountJdbcTemplate().update(sql, new Object[] { firstName, lastName, phoneNumber });
@@ -48,13 +56,22 @@ public class AccountJDBCTemplate implements AccountDAO {
 			customerCode = getAccountJdbcTemplate().queryForObject(sql, Integer.class);
 		} else {
 			sql = "INSERT INTO Stylists(stylist_first_name, stylist_last_name, salon_code) VALUES(?, ?, ?)";
-			getAccountJdbcTemplate().update(sql, new Object[] {firstName, lastName, numericSalonCode});
+			getAccountJdbcTemplate().update(sql, new Object[] { firstName, lastName, numericSalonCode });
 			sql = "SELECT id FROM Stylists ORDER BY id DESC LIMIT 1";
 			stylistId = getAccountJdbcTemplate().queryForObject(sql, Integer.class);
 		}
 
-		sql = "insert into Accounts (email_address, password, customer_id, stylist_id) values (?, ?, ?, ?)";
-		getAccountJdbcTemplate().update(sql, emailAddress, password, customerCode, stylistId);
+		sql = "insert into Accounts (email_address, password, customer_id, stylist_id, verification_code) values (?, ?, ?, ?, ?)";
+		if (1 == getAccountJdbcTemplate().update(sql, emailAddress, password, customerCode, stylistId, verificationCode)) {
+			returnMessage = "Account Created Successfully. Please verify your account using the verification email we have sent to you at the email address you signed up with.";
+			try {
+				EmailSender.sendEmail(emailAddress, verificationCode);
+			} catch (IOException e) {
+				System.out.println("There was an error sending user verification email for email: " + emailAddress);
+			}
+		}
+		
+		return returnMessage;
 	}
 
 	@Override

@@ -42,8 +42,8 @@ public class AccountService {
 		return returnCode;
 	}
 
-	public void createAccount(String emailAddress, String password, String firstName, String lastName, String phoneNumber, String salonCode) {
-		getAccountJDBCTemplate().createAccount(emailAddress, password, firstName, lastName, phoneNumber, salonCode);
+	public String createAccount(String emailAddress, String password, String firstName, String lastName, String phoneNumber, String salonCode) {
+		return getAccountJDBCTemplate().createAccount(emailAddress, password, firstName, lastName, phoneNumber, salonCode);
 	}
 	
 	public AccountDAO getAccountJDBCTemplate() {

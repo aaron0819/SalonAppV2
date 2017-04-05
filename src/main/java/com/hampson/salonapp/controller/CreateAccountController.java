@@ -21,10 +21,9 @@ public class CreateAccountController {
 
 		accountService = new AccountService();
 
-		accountService.createAccount(emailAddress, password, firstName, lastName, phoneNumber, salonCode);
-		
-		model.addAttribute("error", "Account Created Successfully. You may now log into your account.");
-		
+		model.addAttribute("error",
+				accountService.createAccount(emailAddress, password, firstName, lastName, phoneNumber, salonCode));
+
 		return new ModelAndView("index");
 	}
 }
