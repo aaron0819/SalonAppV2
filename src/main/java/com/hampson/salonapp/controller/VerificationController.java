@@ -16,7 +16,7 @@ public class VerificationController {
 	public ModelAndView verifyAccount(@RequestParam("verificationCode") String verificationCode,
 			@RequestParam("emailAddress") String emailAddress, HttpServletRequest request) {
 
-		ModelAndView mav = new ModelAndView();
+		ModelAndView mav = new ModelAndView("redirect:/login");
 		AccountService accountService = new AccountService();
 
 		String[] account = accountService.retrieveAccountByEmailAddress(emailAddress);
@@ -28,11 +28,9 @@ public class VerificationController {
 				returnMessage = "Account Successfully Verified";
 
 				if (Integer.parseInt(account[0]) == 1) {
-					request.getSession().setAttribute("pageIndicator", account[1]);
-					mav.setViewName("redirect:/login");
+					request.getSession().setAttribute("pageIndicator", account[0]);
 				} else if (Integer.parseInt(account[1]) == 1) {
 					request.getSession().setAttribute("pageIndicator", account[1]);
-					mav.setViewName("redirect:/login");
 				}
 			}
 		}
