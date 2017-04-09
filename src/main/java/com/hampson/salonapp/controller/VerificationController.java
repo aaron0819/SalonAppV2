@@ -12,7 +12,7 @@ import com.hampson.salonapp.service.AccountService;
 @Controller
 public class VerificationController {
 
-	@RequestMapping
+	@RequestMapping("/verify")
 	public ModelAndView verifyAccount(@RequestParam("verificationCode") String verificationCode,
 			@RequestParam("emailAddress") String emailAddress, HttpServletRequest request) {
 
