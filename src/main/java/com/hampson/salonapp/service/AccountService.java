@@ -41,6 +41,10 @@ public class AccountService {
 		
 		return returnCode;
 	}
+	
+	public String[] retrieveAccountByEmailAddress(String emailAddress) {
+		return getAccountJDBCTemplate().getAccountByEmailAddress(emailAddress);
+	}
 
 	public String createAccount(String emailAddress, String password, String firstName, String lastName, String phoneNumber, String salonCode) {
 		return getAccountJDBCTemplate().createAccount(emailAddress, password, firstName, lastName, phoneNumber, salonCode);
@@ -52,6 +56,10 @@ public class AccountService {
 
 	public void setAccountJDBCTemplate(AccountDAO accountJDBCTemplate) {
 		this.accountJDBCTemplate = accountJDBCTemplate;
+	}
+
+	public void verifyAccount(String emailAddress) {
+		getAccountJDBCTemplate().verifyAccount(emailAddress);
 	}
 
 }

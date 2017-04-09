@@ -9,4 +9,8 @@ public interface AccountDAO {
 	public String getPasswordHash(String username);
 	
 	public int getAccountType(String emailAddress, HttpServletRequest request);
+	
+	public String[] getAccountByEmailAddress(String emailAddress);
+	
+	public void verifyAccount(String emailAddress);
 }

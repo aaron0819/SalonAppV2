@@ -9,8 +9,10 @@ import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
@@ -38,7 +40,7 @@ public class AccountJDBCTemplate implements AccountDAO {
 		int stylistId = 0;
 		int numericSalonCode = 0;
 		SecureRandom random = null;
-		
+
 		try {
 			numericSalonCode = Integer.parseInt(salonCode);
 		} catch (NumberFormatException nfe) {
@@ -62,7 +64,8 @@ public class AccountJDBCTemplate implements AccountDAO {
 		}
 
 		sql = "insert into Accounts (email_address, password, customer_id, stylist_id, verification_code) values (?, ?, ?, ?, ?)";
-		if (1 == getAccountJdbcTemplate().update(sql, emailAddress, password, customerCode, stylistId, verificationCode)) {
+		if (1 == getAccountJdbcTemplate().update(sql, emailAddress, password, customerCode, stylistId,
+				verificationCode)) {
 			returnMessage = "Account Created Successfully. Please verify your account using the verification email we have sent to you at the email address you signed up with.";
 			try {
 				EmailSender.sendEmail(emailAddress, verificationCode);
@@ -70,7 +73,7 @@ public class AccountJDBCTemplate implements AccountDAO {
 				System.out.println("There was an error sending user verification email for email: " + emailAddress);
 			}
 		}
-		
+
 		return returnMessage;
 	}
 
@@ -114,6 +117,41 @@ public class AccountJDBCTemplate implements AccountDAO {
 				return accountType;
 			}
 		}).get(0).intValue();
+	}
+
+	@Override
+	public String[] getAccountByEmailAddress(String emailAddress) {
+		String sql = "SELECT customer_id, stylist_id, verification_code FROM Accounts WHERE email_address = ?";
+
+		String[] account;
+		
+		try {
+
+			account = getAccountJdbcTemplate().query(sql, new Object[] { emailAddress },
+					new ResultSetExtractor<String[]>() {
+
+						@Override
+						public String[] extractData(ResultSet rs) throws SQLException, DataAccessException {
+
+							String[] acc = new String[3];
+
+							if (rs.next()) {
+								acc[0] = rs.getString("customer_id");
+								acc[1] = rs.getString("stylist_id");
+								acc[2] = rs.getString("verification_code");
+							}
+							return acc;
+						}
+					});
+		} catch (EmptyResultDataAccessException e) {
+			account = null;
+		}
+		return account;
+	}
+
+	@Override
+	public void verifyAccount(String emailAddress) {
+		
 	}
 
 }

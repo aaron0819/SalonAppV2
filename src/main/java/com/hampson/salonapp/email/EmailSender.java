@@ -27,10 +27,10 @@ public class EmailSender {
 		Email to = new Email(userEmail);
 		Content content = new Content("text/html",
 				"Hello, <br />Thank you for signing up for a Salon Appointntment Manager account. Below is the link to activate your account. <br /><br /><a href=\"https://salonapp-springboot.herokuapp.com/verify?verificationCode="
-						+ verificationCode + "\">Verify</a><br/><br/>Thank you,<br />Salon Appointment Manager Staff");
+						+ verificationCode + "&emailAddress=" + userEmail + "\">Verify</a><br/><br/>Thank you,<br />Salon Appointment Manager Staff");
 		Mail mail = new Mail(from, subject, to, content);
 
-		SendGrid sg = new SendGrid("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");
+		System.getenv("SENDGRID_API_KEY");
 		Request request = new Request();
 		try {
 			request.method = Method.POST;
