@@ -1,8 +1,6 @@
 package com.hampson.salonapp.email;
 
 import java.io.IOException;
-import java.math.BigInteger;
-import java.security.SecureRandom;
 
 // using SendGrid's Java Library
 // https://github.com/sendgrid/sendgrid-java
@@ -30,7 +28,7 @@ public class EmailSender {
 						+ verificationCode + "&emailAddress=" + userEmail + "\">Verify</a><br/><br/>Thank you,<br />Salon Appointment Manager Staff");
 		Mail mail = new Mail(from, subject, to, content);
 
-		System.getenv("SENDGRID_API_KEY");
+		SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
 		Request request = new Request();
 		try {
 			request.method = Method.POST;
