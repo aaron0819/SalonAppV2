@@ -28,9 +28,9 @@ public class VerificationController {
 				returnMessage = "Account Successfully Verified";
 
 				if (Integer.parseInt(account[0]) == 1) {
-					request.getSession().setAttribute("pageIndicator", account[0]);
+					request.getSession().setAttribute("pageIndicator", 1);
 				} else if (Integer.parseInt(account[1]) == 1) {
-					request.getSession().setAttribute("pageIndicator", account[1]);
+					request.getSession().setAttribute("pageIndicator", 2);
 				}
 			}
 		}
