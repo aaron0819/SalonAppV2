@@ -27,9 +27,9 @@ public class VerificationController {
 				accountService.verifyAccount(emailAddress);
 				returnMessage = "Account Successfully Verified";
 
-				if (Integer.parseInt(account[0]) == 1) {
+				if (Integer.parseInt(account[0]) > 0) {
 					request.getSession().setAttribute("pageIndicator", 1);
-				} else if (Integer.parseInt(account[1]) == 1) {
+				} else if (Integer.parseInt(account[1]) > 0) {
 					request.getSession().setAttribute("pageIndicator", 2);
 				}
 			}
