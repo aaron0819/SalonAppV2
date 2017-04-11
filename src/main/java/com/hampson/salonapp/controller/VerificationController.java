@@ -35,7 +35,7 @@ public class VerificationController {
 			}
 		}
 
-		mav.addObject("returnMessage", returnMessage);
+		//mav.addObject("returnMessage", returnMessage);
 
 		return mav;
 	}
