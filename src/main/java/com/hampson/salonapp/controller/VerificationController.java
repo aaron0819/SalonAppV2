@@ -15,8 +15,7 @@ public class VerificationController {
 	@RequestMapping("/verify")
 	public ModelAndView verifyAccount(@RequestParam("verificationCode") String verificationCode,
 			@RequestParam("emailAddress") String emailAddress, HttpServletRequest request) {
-
-		ModelAndView mav = new ModelAndView("redirect:/login");
+		ModelAndView mav = new ModelAndView("index");
 		AccountService accountService = new AccountService();
 
 		String[] account = accountService.retrieveAccountByEmailAddress(emailAddress);
@@ -30,11 +29,11 @@ public class VerificationController {
 				if (Integer.parseInt(account[0]) > 0) {
 					request.getSession().setAttribute("pageIndicator", 1);
 					request.getSession().setAttribute("customerId", Integer.parseInt(account[0]));
-					System.out.println("customer");
+					mav = new ModelAndView("customerHome");
 				} else if (Integer.parseInt(account[1]) > 0) {
 					request.getSession().setAttribute("pageIndicator", 2);
 					request.getSession().setAttribute("stylistId", Integer.parseInt(account[1]));
-					System.out.println("stylist");
+					mav = new ModelAndView("stylistHome");
 				}
 			}
 		}
