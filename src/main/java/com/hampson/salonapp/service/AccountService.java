@@ -25,6 +25,7 @@ public class AccountService {
 	 * 0 - Invalid Credentials
 	 * 1 - Successful customer login
 	 * 2 - Successful stylist login
+	 * 3 - Email not verified
 	 */
 	public int login(String emailAddress, String password, HttpServletRequest request) {
 		int returnCode = 0;
@@ -34,6 +35,11 @@ public class AccountService {
 		}
 		
 		String hashedPassword = getAccountJDBCTemplate().getPasswordHash(emailAddress);
+		String verificationCode = getAccountJDBCTemplate().getVerificationCode(emailAddress);
+		
+		if(verificationCode != null) {
+			return 3;
+		}
 		
 		if (hashedPassword != null && BCrypt.checkpw(password, hashedPassword)) {
 			returnCode = getAccountJDBCTemplate().getAccountType(emailAddress, request);

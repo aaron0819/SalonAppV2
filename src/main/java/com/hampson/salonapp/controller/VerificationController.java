@@ -29,7 +29,6 @@ public class VerificationController {
 				if (Integer.parseInt(account[0]) > 0) {
 					request.getSession().setAttribute("pageIndicator", 1);
 					request.getSession().setAttribute("customerId", Integer.parseInt(account[0]));
-					System.out.println("customer");
 				} else if (Integer.parseInt(account[1]) > 0) {
 					request.getSession().setAttribute("pageIndicator", 2);
 					request.getSession().setAttribute("stylistId", Integer.parseInt(account[1]));
@@ -38,7 +37,7 @@ public class VerificationController {
 			}
 		}
 
-		//mav.addObject("returnMessage", returnMessage);
+		request.getSession().setAttribute("returnMessage", returnMessage);
 
 		return mav;
 	}

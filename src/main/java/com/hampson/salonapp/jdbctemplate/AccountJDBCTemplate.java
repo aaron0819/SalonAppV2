@@ -151,7 +151,37 @@ public class AccountJDBCTemplate implements AccountDAO {
 
 	@Override
 	public void verifyAccount(String emailAddress) {
+		String sql = "UPDATE Accounts SET verification_code = null WHERE email_address = ?";
 		
+		getAccountJdbcTemplate().update(sql, new Object[] {emailAddress});
+	}
+
+	@Override
+	public String getVerificationCode(String emailAddress) {
+		String sql = "SELECT verification_code FROM Accounts WHERE email_address = ?";
+
+		String verificationCode;
+		
+		try {
+			verificationCode = getAccountJdbcTemplate().query(sql, new Object[] { emailAddress },
+					new ResultSetExtractor<String>() {
+
+						@Override
+						public String extractData(ResultSet rs) throws SQLException, DataAccessException {
+
+							String code = null;
+
+							if (rs.next()) {
+								code = rs.getString("verification_code");
+							}
+							return code;
+						}
+					});
+		} catch (EmptyResultDataAccessException e) {
+			verificationCode = null;
+		}
+				
+		return verificationCode;
 	}
 
 }

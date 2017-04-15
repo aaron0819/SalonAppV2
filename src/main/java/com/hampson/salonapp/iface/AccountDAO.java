@@ -13,4 +13,6 @@ public interface AccountDAO {
 	public String[] getAccountByEmailAddress(String emailAddress);
 	
 	public void verifyAccount(String emailAddress);
+
+	public String getVerificationCode(String emailAddress);
 }
