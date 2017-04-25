@@ -69,8 +69,7 @@ public class AccountService {
 	}
 
 	public String getCustomerEmailAddress(int customerId) {
-		getAccountJDBCTemplate().getCustomerEmailAddress(customerId);
-		return null;
+		return getAccountJDBCTemplate().getCustomerEmailAddress(customerId);
 	}
 
 }
