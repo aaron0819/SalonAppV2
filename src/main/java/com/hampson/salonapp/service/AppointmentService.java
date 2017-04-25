@@ -41,7 +41,7 @@ public class AppointmentService {
 				try {
 					EmailSender.sendConfirmationEmail(emailAddress, apptRequest);
 				} catch (IOException e) {
-					//TODO - Email sending error handling logic
+					System.out.println(e.getStackTrace());
 				}
 			} else {
 				//TODO - Request appointment error handling logic
