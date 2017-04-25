@@ -48,7 +48,9 @@ public class EmailSender {
 				+ apptRequest.getAppointmentType() + "<br/>Appointment Date: " + apptRequest.getAppointmentDate()
 				+ "<br/>Appointment Time: " + apptRequest.getAppointmentStartTime()
 				+ "<br/>Stylist: " + apptRequest.getPreferredStylist());
-		// TODO
+
+		System.out.println("CONTENT");
+		
 		Mail mail = new Mail(from, subject, to, content);
 
 		SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
@@ -58,6 +60,7 @@ public class EmailSender {
 			request.endpoint = "mail/send";
 			request.body = mail.build();
 			sg.api(request);
+			System.out.println("EMAIL SENT");
 		} catch (IOException ex) {
 			throw ex;
 		}

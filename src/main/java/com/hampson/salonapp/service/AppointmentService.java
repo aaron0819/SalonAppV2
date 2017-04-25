@@ -39,6 +39,7 @@ public class AppointmentService {
 			
 			if(1 == returnCode) {
 				try {
+					System.out.println("EMAIL: " + emailAddress);
 					EmailSender.sendConfirmationEmail(emailAddress, apptRequest);
 				} catch (IOException e) {
 					System.out.println(e.getStackTrace());
