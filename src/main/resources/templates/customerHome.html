@@ -40,6 +40,9 @@
 		</div>
 	</nav>
 	<div class="col-xs-12" style="text-align: center;">
+		<h2 th:text="${alertMessage}"></h2>	
+	</div>
+	<div th:if="${not #lists.isEmpty(appointments)}" class="col-xs-12" style="text-align: center;">
 		<H3>My Upcoming Appointments</H3>
 		<table
 			class="table-bordered table-striped"
@@ -63,6 +66,10 @@
 		</table>
 	</div>
 	<br />
+	<div th:if="${#lists.isEmpty(appointments)}" class="col-xs-12" style="text-align: center;">
+		You currently have no upcoming appointments. Click Request New Appointment to submit an appointment request.
+		<br />	
+	</div>
 	<div
 		th:if="${not #lists.isEmpty(pendingAppointments)}"
 		style="text-align: center;">

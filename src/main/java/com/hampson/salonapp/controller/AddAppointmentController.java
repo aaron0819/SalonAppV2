@@ -1,5 +1,7 @@
 package com.hampson.salonapp.controller;
 
+import static com.hampson.salonapp.util.AppointmentUtils.buildAppointmentObject;
+
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.hampson.salonapp.model.AppointmentRequest;
 import com.hampson.salonapp.model.Customer;
 import com.hampson.salonapp.service.AppointmentService;
 import com.hampson.salonapp.service.CustomerService;
+import com.hampson.salonapp.util.AppointmentUtils;
 
 @Controller
 public class AddAppointmentController {
@@ -56,8 +60,10 @@ public class AddAppointmentController {
 
 		AppointmentService appointmentService = new AppointmentService();
 
-		appointmentService.requestAppointment(appointmentType, (int) request.getSession().getAttribute("customerId"),
+		AppointmentRequest appt = buildAppointmentObject(appointmentType, (int) request.getSession().getAttribute("customerId"),
 				appointmentDate, alternateAppointmentDate, appointmentStartTime, alternateAppointmentTime, preferredStylist);
+		
+		appointmentService.requestAppointment(appt);
 
 		return new ModelAndView("redirect:/login");
 	}

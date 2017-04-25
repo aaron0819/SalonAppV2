@@ -68,7 +68,7 @@ public class AccountJDBCTemplate implements AccountDAO {
 				verificationCode)) {
 			returnMessage = "Account Created Successfully. Please verify your account using the verification email we have sent to you at the email address you signed up with.";
 			try {
-				EmailSender.sendEmail(emailAddress, verificationCode);
+				EmailSender.sendVerificationEmail(emailAddress, verificationCode);
 			} catch (IOException e) {
 				System.out.println("There was an error sending user verification email for email: " + emailAddress);
 			}
@@ -182,6 +182,34 @@ public class AccountJDBCTemplate implements AccountDAO {
 		}
 				
 		return verificationCode;
+	}
+
+	@Override
+	public String getCustomerEmailAddress(int customerId) {
+		String sql = "SELECT email_address FROM Accounts WHERE customer_id = ?";
+
+		String emailAddress;
+		
+		try {
+			emailAddress = getAccountJdbcTemplate().query(sql, new Object[] { customerId },
+					new ResultSetExtractor<String>() {
+
+						@Override
+						public String extractData(ResultSet rs) throws SQLException, DataAccessException {
+
+							String code = null;
+
+							if (rs.next()) {
+								code = rs.getString("email_address");
+							}
+							return code;
+						}
+					});
+		} catch (EmptyResultDataAccessException e) {
+			emailAddress = null;
+		}
+				
+		return emailAddress;
 	}
 
 }

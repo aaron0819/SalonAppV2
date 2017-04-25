@@ -1,14 +1,17 @@
 package com.hampson.salonapp.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.hampson.salonapp.email.EmailSender;
 import com.hampson.salonapp.iface.AppointmentDAO;
 import com.hampson.salonapp.jdbctemplate.AppointmentJDBCTemplate;
 import com.hampson.salonapp.model.Appointment;
+import com.hampson.salonapp.model.AppointmentRequest;
 import com.hampson.salonapp.model.PendingAppointment;
 
 public class AppointmentService {
@@ -27,10 +30,20 @@ public class AppointmentService {
 				appointmentEndTime, stylistId, customerId);
 	}
 
-	public void requestAppointment(String appointmentType, int customerId, String appointmentDate, String alternateAppointmentDate,
-			String appointmentStartTime, String alternateAppointmentTime, String preferredStylist) {
-			getAppointmentJDBCTemplate().requestAppointment(appointmentType, customerId, 
-					appointmentDate, alternateAppointmentDate, appointmentStartTime, alternateAppointmentTime, preferredStylist);
+	public void requestAppointment(AppointmentRequest apptRequest) {
+			int returnCode = getAppointmentJDBCTemplate().requestAppointment(apptRequest);
+	
+			String emailAddress = new AccountService().getCustomerEmailAddress(apptRequest.getCustomerId());
+			
+			if(0 == returnCode) {
+				try {
+					EmailSender.sendConfirmationEmail(emailAddress, apptRequest);
+				} catch (IOException e) {
+					//TODO - Email sending error handling logic
+				}
+			} else {
+				//TODO - Request appointment error handling logic
+			}
 	}
 
 	public List<Appointment> getAppointmentsByStylist(int stylistId) {

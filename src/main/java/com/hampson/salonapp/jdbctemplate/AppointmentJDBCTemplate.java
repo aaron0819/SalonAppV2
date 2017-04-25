@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.hampson.salonapp.iface.AppointmentDAO;
 import com.hampson.salonapp.model.Appointment;
+import com.hampson.salonapp.model.AppointmentRequest;
 import com.hampson.salonapp.model.Customer;
 import com.hampson.salonapp.model.PendingAppointment;
 import com.hampson.salonapp.model.Stylist;
@@ -120,14 +121,13 @@ public class AppointmentJDBCTemplate implements AppointmentDAO {
 	}
 
 	@Override
-	public void requestAppointment(String appointmentType, int customerId, String appointmentDate,
-			String alternateAppointmentDate, String appointmentStartTime, String alternateAppointmentTime,
-			String preferredStylist) {
+	public int requestAppointment(AppointmentRequest apptRequest) {
 
 		String sql = "INSERT into pendingappointments (service, requested_date, alternate_date, requested_time, alternate_time, stylist_id, customer_id) values (?, ?, ?, ?, ?, ?, ?)";
 
-		getJdbcTemplate().update(sql, appointmentType, appointmentDate, alternateAppointmentDate, appointmentStartTime,
-				alternateAppointmentTime, Integer.parseInt(preferredStylist), customerId);
+		return getJdbcTemplate().update(sql, apptRequest.getAppointmentType(), apptRequest.getAppointmentDate(),
+				apptRequest.getAlternateAppointmentDate(), apptRequest.getAppointmentStartTime(),
+				apptRequest.getAlternateAppointmentTime(), Integer.parseInt(apptRequest.getPreferredStylist()), apptRequest.getCustomerId());
 	}
 
 	@Override
