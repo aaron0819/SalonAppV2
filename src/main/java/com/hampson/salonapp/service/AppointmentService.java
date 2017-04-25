@@ -35,7 +35,9 @@ public class AppointmentService {
 	
 			String emailAddress = new AccountService().getCustomerEmailAddress(apptRequest.getCustomerId());
 			
-			if(0 == returnCode) {
+			System.out.println("RETURN CODE: " + returnCode);
+			
+			if(1 == returnCode) {
 				try {
 					EmailSender.sendConfirmationEmail(emailAddress, apptRequest);
 				} catch (IOException e) {
