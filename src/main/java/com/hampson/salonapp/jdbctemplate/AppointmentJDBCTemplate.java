@@ -197,7 +197,7 @@ public class AppointmentJDBCTemplate implements AppointmentDAO {
 	 */
 	@Override
 	public PendingAppointment confirmAppointment(int pendingAppointmentId) throws Exception {
-		String sql = "SELECT PendingAppointments.id, PendingAppointments.service, PendingAppointments.requested_date, PendingAppointments.alternate_date, PendingAppointments.requested_time, PendingAppointments.alternate_time, PendingAppointments.stylist_id, PendingAppointments.customer_id, Accounts.email_address INNER JOIN Accounts ON PendingAppointments.customer_id = Accounts.customer_id FROM pendingappointments WHERE id = ? LIMIT 1";
+		String sql = "SELECT PendingAppointments.id, PendingAppointments.service, PendingAppointments.requested_date, PendingAppointments.alternate_date, PendingAppointments.requested_time, PendingAppointments.alternate_time, PendingAppointments.stylist_id, PendingAppointments.customer_id, Accounts.email_address FROM pendingappointments INNER JOIN Accounts ON PendingAppointments.customer_id = Accounts.customer_id WHERE id = ? LIMIT 1";
 
 		PendingAppointment pending = getJdbcTemplate().query(sql, new Object[] { pendingAppointmentId },
 				new ResultSetExtractor<PendingAppointment>() {
