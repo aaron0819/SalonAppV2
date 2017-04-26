@@ -127,7 +127,8 @@ public class AppointmentJDBCTemplate implements AppointmentDAO {
 
 		return getJdbcTemplate().update(sql, apptRequest.getAppointmentType(), apptRequest.getAppointmentDate(),
 				apptRequest.getAlternateAppointmentDate(), apptRequest.getAppointmentStartTime(),
-				apptRequest.getAlternateAppointmentTime(), Integer.parseInt(apptRequest.getPreferredStylist()), apptRequest.getCustomerId());
+				apptRequest.getAlternateAppointmentTime(), Integer.parseInt(apptRequest.getPreferredStylist()),
+				apptRequest.getCustomerId());
 	}
 
 	@Override
@@ -192,12 +193,11 @@ public class AppointmentJDBCTemplate implements AppointmentDAO {
 	 * appointments table
 	 * 
 	 * @param pendingAppointmentId
+	 * @throws Exception
 	 */
 	@Override
-	public String confirmAppointment(int pendingAppointmentId) {
-		String response = "";
-
-		String sql = "SELECT id, service, requested_date, alternate_date, requested_time, alternate_time, stylist_id, customer_id FROM pendingappointments WHERE id = ? LIMIT 1";
+	public PendingAppointment confirmAppointment(int pendingAppointmentId) throws Exception {
+		String sql = "SELECT PendingAppointments.id, PendingAppointments.service, PendingAppointments.requested_date, PendingAppointments.alternate_date, PendingAppointments.requested_time, PendingAppointments.alternate_time, PendingAppointments.stylist_id, PendingAppointments.customer_id, Accounts.email_address INNER JOIN Accounts ON PendingAppointments.customer_id = Accounts.customer_id FROM pendingappointments WHERE id = ? LIMIT 1";
 
 		PendingAppointment pending = getJdbcTemplate().query(sql, new Object[] { pendingAppointmentId },
 				new ResultSetExtractor<PendingAppointment>() {
@@ -212,6 +212,7 @@ public class AppointmentJDBCTemplate implements AppointmentDAO {
 						if (rs.next()) {
 
 							c.setId(rs.getLong("customer_id"));
+							c.setEmailAddress(rs.getString("email_address"));
 							s.setId(rs.getInt("stylist_id"));
 
 							appt.setId(rs.getInt("id"));
@@ -232,15 +233,11 @@ public class AppointmentJDBCTemplate implements AppointmentDAO {
 
 		int rows = getJdbcTemplate().update(sql, new Object[] { pending.getId() });
 
-		if (rows == 1) {
-			response = "Appointment Confirmed Successfully";
-		} else {
-			response = "There was an error confirming the appointment. Please try again.";
+		if (rows != 1) {
+			throw new Exception("There was an error confirming the appointment");
 		}
 
-		System.out.println(response);
-
-		return response;
+		return pending;
 	}
 
 	@Override

@@ -6,4 +6,6 @@ import com.hampson.salonapp.model.Stylist;
 
 public interface StylistDAO {
 	public List<Stylist> getAllStylists();
+
+	public Stylist getStylistById(int id);
 }

@@ -32,4 +32,7 @@ public class StylistService {
 		return stylistJDBCTemplate;
 	}
 
+	public Stylist getStylistById(int id) {
+		return getStylistJDBCTemplate().getStylistById(id);
+	}
 }

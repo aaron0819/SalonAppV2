@@ -30,7 +30,7 @@ public interface AppointmentDAO {
 	
 	public List<PendingAppointment> getPendingAppointmentsWithNoStylistPreference();
 
-	public String confirmAppointment(int pendingAppointmentId);
+	public PendingAppointment confirmAppointment(int pendingAppointmentId) throws Exception;
 
 	public List<PendingAppointment> getPendingAppointmentsByCustomerId(int customerId);
 }

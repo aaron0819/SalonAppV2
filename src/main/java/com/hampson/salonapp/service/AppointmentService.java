@@ -1,5 +1,8 @@
 package com.hampson.salonapp.service;
 
+import static com.hampson.salonapp.email.EmailSender.sendConfirmedEmail;
+import static com.hampson.salonapp.email.EmailSender.sendRequestConfirmationEmail;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -31,22 +34,19 @@ public class AppointmentService {
 	}
 
 	public void requestAppointment(AppointmentRequest apptRequest) {
-			int returnCode = getAppointmentJDBCTemplate().requestAppointment(apptRequest);
-	
-			String emailAddress = new AccountService().getCustomerEmailAddress(apptRequest.getCustomerId());
-			
-			System.out.println("RETURN CODE: " + returnCode);
-			
-			if(1 == returnCode) {
-				try {
-					System.out.println("EMAIL: " + emailAddress);
-					EmailSender.sendConfirmationEmail(emailAddress, apptRequest);
-				} catch (IOException e) {
-					System.out.println(e.getStackTrace());
-				}
-			} else {
-				//TODO - Request appointment error handling logic
+		int returnCode = getAppointmentJDBCTemplate().requestAppointment(apptRequest);
+
+		String emailAddress = new AccountService().getCustomerEmailAddress(apptRequest.getCustomerId());
+
+		if (1 == returnCode) {
+			try {
+				sendRequestConfirmationEmail(emailAddress, apptRequest);
+			} catch (IOException e) {
+				System.out.println(e.getStackTrace());
 			}
+		} else {
+			// TODO - Request appointment error handling logic
+		}
 	}
 
 	public List<Appointment> getAppointmentsByStylist(int stylistId) {
@@ -60,19 +60,30 @@ public class AppointmentService {
 	public List<PendingAppointment> getPendingAppointmentsByStylistId(int stylistId) {
 		return getAppointmentJDBCTemplate().getPendingAppointmentsByStylistId(stylistId);
 	}
-	
+
 	public List<PendingAppointment> getPendingAppointmentsWithNoStylistPreference() {
 		return getAppointmentJDBCTemplate().getPendingAppointmentsWithNoStylistPreference();
 	}
-	
-	public Object getPendingAppointmentsByCustomerId(int customerId) {
+
+	public List<PendingAppointment> getPendingAppointmentsByCustomerId(int customerId) {
 		return getAppointmentJDBCTemplate().getPendingAppointmentsByCustomerId(customerId);
 	}
-	
+
 	public String confirmAppointment(int pendingAppointmentId) {
-		return getAppointmentJDBCTemplate().confirmAppointment(pendingAppointmentId);
+		PendingAppointment appointment = null;
+		String response = "";
+
+		try {
+			appointment = getAppointmentJDBCTemplate().confirmAppointment(pendingAppointmentId);
+			sendConfirmedEmail(appointment);
+			response = "Appointment Confirmed Successfully";
+		} catch (Exception e) {
+			response = e.getMessage();
+		}
+		
+		return response;
 	}
-	
+
 	public AppointmentDAO getAppointmentJDBCTemplate() {
 		return appointmentJDBCTemplate;
 	}

@@ -1,9 +1,11 @@
 package com.hampson.salonapp.email;
 
+import static java.lang.Integer.parseInt;
+
 import java.io.IOException;
 
 import com.hampson.salonapp.model.AppointmentRequest;
-import com.hampson.salonapp.service.CustomerService;
+import com.hampson.salonapp.model.PendingAppointment;
 // using SendGrid's Java Library
 // https://github.com/sendgrid/sendgrid-java
 import com.sendgrid.Content;
@@ -11,7 +13,6 @@ import com.sendgrid.Email;
 import com.sendgrid.Mail;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
-import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 
 public class EmailSender {
@@ -38,19 +39,40 @@ public class EmailSender {
 		}
 	}
 
-	public static void sendConfirmationEmail(String emailAddress, AppointmentRequest apptRequest) throws IOException {
+	public static void sendRequestConfirmationEmail(String emailAddress, AppointmentRequest apptRequest)
+			throws IOException {
 		Email from = new Email("aaron.d.hampson@gmail.com");
-		String subject = "Salon Appointment Manager Account Verification Code";
+		String subject = "Salon Appointment Manager Appointment Request Confirmation";
 		Email to = new Email(emailAddress);
 		Content content = new Content("text/html", "Thank you for requesting an appointment with Salon. "
 				+ "This is a confirmation that we have recieved your appointment request. "
 				+ "<br/>Your appointment request details are as follows:<br/>" + "Appointment Type: "
 				+ apptRequest.getAppointmentType() + "<br/>Appointment Date: " + apptRequest.getAppointmentDate()
-				+ "<br/>Appointment Time: " + apptRequest.getAppointmentStartTime()
-				+ "<br/>Stylist: " + apptRequest.getPreferredStylist());
+				+ "<br/>Appointment Time: " + apptRequest.getAppointmentStartTime() + "<br/>Stylist: "
+				+ (parseInt(apptRequest.getPreferredStylist()) == 0 ? "No Preferred Stylist Indicated" : ""));
 
 		System.out.println("CONTENT");
-		
+
+		Mail mail = new Mail(from, subject, to, content);
+
+		SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
+		Request request = new Request();
+		try {
+			request.method = Method.POST;
+			request.endpoint = "mail/send";
+			request.body = mail.build();
+			sg.api(request);
+			System.out.println("EMAIL SENT");
+		} catch (IOException ex) {
+			throw ex;
+		}
+	}
+
+	public static void sendConfirmedEmail(PendingAppointment pendingAppt) throws IOException {
+		Email from = new Email("aaron.d.hampson@gmail.com");
+		String subject = "Salon Appointment Manager Appointment Confirmation";
+		Email to = new Email(pendingAppt.getCustomer().getEmailAddress());
+		Content content = new Content("text/html", "Hello, <br/>Your appointment request has been confirmed for " + pendingAppt.getRequestedDate() + " at " + pendingAppt.getRequestedTime()); 
 		Mail mail = new Mail(from, subject, to, content);
 
 		SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
