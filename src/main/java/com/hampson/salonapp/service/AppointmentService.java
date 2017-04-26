@@ -10,7 +10,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.hampson.salonapp.email.EmailSender;
 import com.hampson.salonapp.iface.AppointmentDAO;
 import com.hampson.salonapp.jdbctemplate.AppointmentJDBCTemplate;
 import com.hampson.salonapp.model.Appointment;
