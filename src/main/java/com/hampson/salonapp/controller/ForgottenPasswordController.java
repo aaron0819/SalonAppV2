@@ -19,9 +19,9 @@ public class ForgottenPasswordController {
 	public ModelAndView sendRecoveryEmail(@RequestParam("emailAddress") String emailAddress) {
 		ModelAndView mav = new ModelAndView("index");
 		
-		new AccountService().resetPassword(emailAddress);
+		String returnMessage = new AccountService().resetPassword(emailAddress);
 		
-		mav.addObject("error", "Recovery Email Sent");
+		mav.addObject("error", returnMessage);
 		
 		return mav;
 	}
