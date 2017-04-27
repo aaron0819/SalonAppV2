@@ -124,7 +124,7 @@ public class AccountJDBCTemplate implements AccountDAO {
 		String sql = "SELECT customer_id, stylist_id, verification_code FROM Accounts WHERE email_address = ?";
 
 		String[] account;
-		
+
 		try {
 
 			account = getAccountJdbcTemplate().query(sql, new Object[] { emailAddress },
@@ -152,8 +152,8 @@ public class AccountJDBCTemplate implements AccountDAO {
 	@Override
 	public void verifyAccount(String emailAddress) {
 		String sql = "UPDATE Accounts SET verification_code = null WHERE email_address = ?";
-		
-		getAccountJdbcTemplate().update(sql, new Object[] {emailAddress});
+
+		getAccountJdbcTemplate().update(sql, new Object[] { emailAddress });
 	}
 
 	@Override
@@ -161,7 +161,7 @@ public class AccountJDBCTemplate implements AccountDAO {
 		String sql = "SELECT verification_code FROM Accounts WHERE email_address = ?";
 
 		String verificationCode;
-		
+
 		try {
 			verificationCode = getAccountJdbcTemplate().query(sql, new Object[] { emailAddress },
 					new ResultSetExtractor<String>() {
@@ -180,7 +180,7 @@ public class AccountJDBCTemplate implements AccountDAO {
 		} catch (EmptyResultDataAccessException e) {
 			verificationCode = null;
 		}
-				
+
 		return verificationCode;
 	}
 
@@ -189,7 +189,7 @@ public class AccountJDBCTemplate implements AccountDAO {
 		String sql = "SELECT email_address FROM Accounts WHERE customer_id = ?";
 
 		String emailAddress;
-		
+
 		try {
 			emailAddress = getAccountJdbcTemplate().query(sql, new Object[] { customerId },
 					new ResultSetExtractor<String>() {
@@ -208,8 +208,15 @@ public class AccountJDBCTemplate implements AccountDAO {
 		} catch (EmptyResultDataAccessException e) {
 			emailAddress = null;
 		}
-				
+
 		return emailAddress;
+	}
+
+	@Override
+	public int updatePassword(String emailAddress, String tempPassword) {
+		String sql = "UPDATE Accounts SET password = ? WHERE email_address = ?";
+
+		return getAccountJdbcTemplate().update(sql, new Object[] { tempPassword, emailAddress });
 	}
 
 }

@@ -17,4 +17,6 @@ public interface AccountDAO {
 	public String getVerificationCode(String emailAddress);
 
 	public String getCustomerEmailAddress(int customerId);
+
+	public int updatePassword(String emailAddress, String tempPassword);
 }
