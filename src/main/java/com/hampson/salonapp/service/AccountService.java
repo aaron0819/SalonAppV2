@@ -13,10 +13,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import com.hampson.salonapp.email.EmailSender;
 import com.hampson.salonapp.iface.AccountDAO;
 import com.hampson.salonapp.jdbctemplate.AccountJDBCTemplate;
-import com.hampson.salonapp.util.PasswordUtil;
 
 public class AccountService {
 
@@ -90,8 +88,7 @@ public class AccountService {
 	 */
 	public String resetPassword(String emailAddress) {
 		String tempPassword = generateTemporaryPassword();
-		String encryptedPassword = encryptPassword(tempPassword);
-		int returnCode = getAccountJDBCTemplate().updatePassword(emailAddress, encryptedPassword);
+		int returnCode = getAccountJDBCTemplate().updatePassword(emailAddress, encryptPassword(tempPassword));
 		String returnMessage = "";
 
 		switch (returnCode) {
